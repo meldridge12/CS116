@@ -91,11 +91,11 @@ public class Student {
 
 
         
-        // Still needs to check if the student has completed the prerequisit courses
+        // Still needs to check if the student has completed the prerequisit courses needs to call course class
         
         
 
-        // Still needs to check if there is an open seat
+        // Still needs to check if there is an open seat needs to call course class
 
 
         
