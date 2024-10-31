@@ -20,6 +20,14 @@ public class Student {
         numCourses = 0;
     }
 
+    Student(String ID, String name, ArrayList<String> pastCourses, ArrayList<String> futureCourses, int numCourses) {
+        this.ID = ID;
+        this.name = name;
+        this. pastCourses = pastCourses;
+        this.futureCourses = futureCourses;
+        this.numCourses = numCourses;
+    }
+
     
 
     // Accessors
@@ -53,8 +61,8 @@ public class Student {
     public void printPastCourses() {
     
         // Goes through all the past courses and prints them out 
-        for(int i = 0; i < pastCourses.size(); i ++) {
-            System.out.println(pastCourses.indexOf(i));
+        for(String element : pastCourses) {
+            System.out.println(element);
         }
     } 
 
