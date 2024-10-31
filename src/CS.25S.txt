@@ -1,0 +1,26 @@
+ID Name Status Prerequisite
+CS451 Introduction to Parallel and Distributed Computing 35/80 CS351,CS450
+CS100 Introduction to the Profession 45/50
+CS105 Introduction to Computer Programming 3/20
+CS115 Object-Oriented Programming I 99/100
+CS201 Accelerated Introduction to Computer Science 76/100
+CS330 Discrete Structures 49/100 CS116,CS201
+CS331 Data Structures and Algorithms 58/60 CS116,CS201
+CS350 Computer Organization and Assembly Language Programming 90/90 CS116,CS201
+CS351 Systems Programming 24/40 CS331,CS350
+CS401 Introduction to Advanced Studies I 15/30 CS201
+CS430 Introduction to Algorithms 29/90 CS330,CS331
+CS402 Introduction to Advanced Studies II 8/20 CS401
+CS422 Data Mining 9/36 CS331,CS401
+CS425 Database Organization 1/70 CS331,CS401
+CS440 Programming Languages and Translators 5/120 CS330,CS331,CS401
+CS442 Mobile Applications Development 42/80 CS351,CS402
+CS450 Operating Systems 55/160 CS351,CS401,CS402
+CS458 Introduction to Information Security 14/150 CS425,CS450
+CS480 Introduction to Artificial Intelligence 45/100 CS331,CS401
+CS481 Artificial Intelligence Language Understanding 96/120 CS331,CS401
+CS116 Object-Oriented Programming II 35/40 CS115
+CS484 Introduction to Machine Learning 21/60 CS116,CS201,CS401
+CS485 Computers and Society 119/120
+CS487 Software Engineering I 25/130 CS331,CS401
+CS104 Introduction to Computer Programming for Engineers 13/90
