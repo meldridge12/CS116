@@ -1,12 +1,13 @@
+import java.util.ArrayList;
 
 public class Student {
     
     // Attributes
     private String ID;
     private String name; 
-    private String[] pastCourses;
-    private String[] futureCourses;
-
+    private ArrayList<String> pastCourses;
+    private ArrayList<String> futureCourses;
+    private int numCourses; 
     
 
 
@@ -14,8 +15,9 @@ public class Student {
     Student() {
         ID = "No Student ID";
         name = "No Student name";
-        pastCourses = new String[0];
-        futureCourses = new String[0];
+        pastCourses = new ArrayList<>();
+        futureCourses = new ArrayList<>();
+        numCourses = 0;
     }
 
     
@@ -29,11 +31,11 @@ public class Student {
         return name;
     }
 
-    public String[] getPastCourses() {
+    public ArrayList<String> getPastCourses() {
         return pastCourses;
     }
 
-    public String[] getFutureCourses() {
+    public ArrayList<String> getFutureCourses() {
         return futureCourses;
     }
 
@@ -44,6 +46,33 @@ public class Student {
     
     public void setName(String newName) {
         name = newName;
+    }
+
+
+    // Methods
+    public void printPastCourses() {
+        for(int i = 0; i < pastCourses.size(); i ++) {
+            System.out.println(pastCourses.indexOf(i));
+        }
+    } 
+
+    public boolean checkRegistrationForCourses(String course) {
+        if(numCourses >= 5) {
+            System.out.println("Student has registered the max amount of courses");
+            return false;
+        }
+        
+        for(String element : pastCourses) {
+            if(element.equals(course)) {
+                System.out.println("The student has already taken this course");
+                return false;
+            }
+        }
+
+        futureCourses.add(course);
+        numCourses ++;
+        
+        return true;
     }
 
 
