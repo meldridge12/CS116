@@ -17,7 +17,7 @@ public class Student {
         name = "No Student name";
         pastCourses = new ArrayList<>();
         futureCourses = new ArrayList<>();
-        numCourses = 0;
+        numCourses = 5;
     }
 
     Student(String ID, String name, ArrayList<String> pastCourses, ArrayList<String> futureCourses, int numCourses) {
@@ -68,8 +68,17 @@ public class Student {
 
     public boolean checkRegistrationForCourses(String course) {
         
+        
+        // Still needs to check if the student has completed the prerequisit courses
+        
+        
+
+        // Still needs to check if there is an open seat
+
+
+        
         // Checks to see if the student has enough room in their schedule 
-        if(numCourses >= 5) {
+        if(numCourses <= 5) {
             System.out.println("Student has registered the max amount of courses");
             return false;
         }
@@ -90,8 +99,10 @@ public class Student {
             }
         }
 
+
         futureCourses.add(course);
-        numCourses ++;
+        numCourses --;
+        System.out.println("The course registration was sucessful, the student has " + numCourses + " open courses");
         
         return true;
     }
