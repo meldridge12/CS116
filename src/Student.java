@@ -87,7 +87,7 @@ public class Student {
     } 
 
     public boolean checkRegistrationForCourses(String course) {
-        
+
 
 
         
