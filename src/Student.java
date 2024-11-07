@@ -54,6 +54,10 @@ public class Student {
         return this.futureCourses;
     }
 
+    public int getNumCourses() {
+        return this.numCourses;
+    }
+
     // Mutators
     public void setID(String newID) {
         this.ID = newID;
@@ -61,6 +65,10 @@ public class Student {
     
     public void setName(String newName) {
         this.name = newName;
+    }
+
+    public void setNumCourses(int numCourses) {
+        this.numCourses = numCourses;
     }
 
 
