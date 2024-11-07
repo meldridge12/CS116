@@ -89,10 +89,20 @@ public class Student {
     public void printPastCourses() {
     
         // Goes through all the past courses and prints them out 
+        System.out.println("The student's past courses are:");
         for(String element : this.pastCourses) {
             System.out.println(element);
         }
     } 
+
+    public void printFutureCourses() {
+
+        // Goes through all the future courses and prints them out
+        System.out.println("The student's past courses are:");
+        for(String element : this.futureCourses) {
+            System.out.println(element);
+        }
+    }
 
     public boolean checkRegistrationForCourses(String course) {
 
@@ -151,6 +161,19 @@ public class Student {
         System.out.println("Student is not able to cancel course");
         return false;
     }
+
+    public String toString() {
+        String student = "";
+        student = "The student's name and id number is: " + this.name + " " + this.ID + " and is taking " + this.numCourses 
+                    + " amount of courses.";
+
+        this.getPastCourses();
+        this.getFutureCourses();
+        return student;
+    }
+
+
+    
 
 
 }
