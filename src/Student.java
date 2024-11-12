@@ -13,6 +13,7 @@ public class Student {
     private ArrayList<String> futureCourses;
     private int numCourses; 
     private String filePath;
+    private ArrayList<String> availableCourses;  // For courses from file1
     
 
 
@@ -24,6 +25,7 @@ public class Student {
         this.futureCourses = new ArrayList<>();
         this.numCourses = 5;
         this.filePath = "";
+        this.availableCourses = new ArrayList<>();
     }
 
     Student(String ID, String name, ArrayList<String> pastCourses, ArrayList<String> futureCourses, int numCourses, String filePath) {
@@ -58,6 +60,10 @@ public class Student {
         return this.numCourses;
     }
 
+    public ArrayList<String> getAvailableCourses() {
+        return this.availableCourses;
+    }
+
     // Mutators
     public void setID(String newID) {
         this.ID = newID;
@@ -73,103 +79,98 @@ public class Student {
 
 
     // Methods
-    public void readFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+    public boolean readFile(String fileName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line = reader.readLine();
+            
+            // Check if it's file1 (has column headers) or file2 (starts with student name)
+            if (line.contains("ID Name Status")) {  // File1 - Available courses
+                // Skip header
+                line = reader.readLine();
+                while (line != null) {
+                    String[] parts = line.split("\t");
+                    if (parts.length > 0) {
+                        // Store the full course information
+                        this.availableCourses.add(line.trim());
+                    }
+                    line = reader.readLine();
+                }
+            } else {  // File2 - Student info
+                String[] studentInfo = line.split("\t");
+                if (studentInfo.length >= 3) {
+                    this.name = studentInfo[0].trim();
+                    this.ID = studentInfo[1].trim();
+                    String[] courses = studentInfo[2].split(",");
+                    this.pastCourses.clear();
+                    for (String course : courses) {
+                        this.pastCourses.add(course.trim());
+                    }
+                }
             }
-         } catch (IOException e) {
-                System.out.println("An error occurred while reading the file: " + e.getMessage());
-                e.printStackTrace();
-            }
-
+            return true;
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+            return false;
+        }
     }
 
-    public void printPastCourses() {
-    
-        // Goes through all the past courses and prints them out 
-        System.out.println("The student's past courses are:");
-        for(String element : this.pastCourses) {
-            System.out.println(element);
-        }
-    } 
+    public List<String> getPastCoursesFormatted() {
+        List<String> formattedCourses = new ArrayList<>();
+        formattedCourses.addAll(this.pastCourses);
+        return formattedCourses;
+    }
 
-    public void printFutureCourses() {
-
-        // Goes through all the future courses and prints them out
-        System.out.println("The student's past courses are:");
+    public List<String> getFutureCoursesFormatted() {
+        List<String> formattedCourses = new ArrayList<>();
         for(String element : this.futureCourses) {
-            System.out.println(element);
+            formattedCourses.add(element);
         }
+        return formattedCourses;
     }
 
     public boolean checkRegistrationForCourses(String course) {
-
-
-
-        
-        // Still needs to check if the student has completed the prerequisit courses needs to call course class
-        
-        
-
-        // Still needs to check if there is an open seat needs to call course class
-
-
-        
-        // Checks to see if the student has enough room in their schedule 
-        if(this.numCourses <= 5) {
-            System.out.println("Student has registered the max amount of courses");
+        // Check max courses (should allow registration if numCourses > 0)
+        if (this.numCourses <= 0) {
             return false;
         }
         
-        // Goes through past courses to see if student has already taken the course
-        for(String element : this.pastCourses) {
-            if(element.equals(course)) {
-                System.out.println("The student has already taken this course");
+        // Check past courses using formatted list
+        for (String pastCourse : getPastCoursesFormatted()) {
+            if (pastCourse.equals(course)) {
                 return false;
             }
         }
 
-        // Goes through future courses to check if student has registered for this couse already
-        for(String element : this.futureCourses) {
-            if(element.equals(course)) {
-                System.out.println("The student has already registered for this course");
+        // Check future courses
+        for (String element : this.futureCourses) {
+            if (element.equals(course)) {
                 return false;
             }
         }
-
 
         this.futureCourses.add(course);
-        this.numCourses --;
-        System.out.println("The course registration was sucessful, the student has " + this.numCourses + " open courses");
-        
+        this.numCourses--;
         return true;
     }
 
     public boolean cancelCourse(String course) {
-        
-        // Goes through future courses to check if student has that course regiestered in order
-        // to be able to cancel it, still needs to check if student has registered in previous 
-        for(String element : this.futureCourses) {
-            if(element.equals(course)) {
-                System.out.println("The student is able to cancel this course");
-                return true;
-            }
-        }  
-
-        System.out.println("Student is not able to cancel course");
+        if (this.futureCourses.remove(course)) {
+            this.numCourses++;
+            return true;
+        }
         return false;
     }
 
     public String toString() {
-        String student = "";
-        student = "The student's name and id number is: " + this.name + " " + this.ID + " and is taking " + this.numCourses 
-                    + " amount of courses.";
-
-        this.getPastCourses();
-        this.getFutureCourses();
-        return student;
+        StringBuilder student = new StringBuilder();
+        student.append("The student's name and id number is: ").append(this.name)
+              .append(" ").append(this.ID).append(" and is taking ")
+              .append(this.numCourses).append(" amount of courses.\n");
+        
+        student.append("Past courses: ").append(String.join(", ", getPastCoursesFormatted())).append("\n");
+        student.append("Future courses: ").append(String.join(", ", getFutureCoursesFormatted()));
+        
+        return student.toString();
     }
 
 
