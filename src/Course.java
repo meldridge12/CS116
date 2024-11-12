@@ -7,7 +7,7 @@ public class Course {
     private String name;
     private int currentNumSeats;
     private int totalNumSeats;
-    private ArrayList<String> prerequisites;
+    private ArrayList<String> preReqs;
 
     // constants
 
@@ -17,7 +17,7 @@ public class Course {
         name = "N/A";
         currentNumSeats = 0;
         totalNumSeats = 0;
-        prerequisites = new ArrayList<String>();
+        preReqs = new ArrayList<String>();
     }
 
     public Course(String tempID, String tempName, int tempCurrent, int tempTotal, ArrayList<String> tempReqs) {
@@ -25,7 +25,7 @@ public class Course {
         name = tempName;
         currentNumSeats = tempCurrent;
         totalNumSeats = tempTotal;
-        prerequisites = tempReqs;
+        preReqs = tempReqs;
     }
 
     // accessors
@@ -46,7 +46,7 @@ public class Course {
     }
 
     public ArrayList<String> getPrereqs() {
-        return prerequisites;
+        return preReqs;
     }
 
     // mutators
@@ -67,15 +67,35 @@ public class Course {
     }
 
     public void setNewPrereqs(ArrayList<String> newPreeqs) {
-        prerequisites = newPreeqs;
+        preReqs = newPreeqs;
     }
 
     // additional methods
+    public boolean classFull() {
+        return currentNumSeats / totalNumSeats == 1;
+    }
+
+    public boolean preReqsTaken(ArrayList<String> oldCourses) {
+        boolean noPrereqs = false;
+
+        for (String oldCourse : oldCourses) {
+            if (noPrereqs) {
+                return false;
+            }
+
+            noPrereqs = true;
+            for (int i = 0; i < preReqs.size(); i++) {
+                if (oldCourse != preReqs.get(i))
+                    noPrereqs = false;
+            }
+        }
+        return true;
+    }
 
     // 2String
     public String toString() {
         String course = iD + "/t" + name + "/t" + currentNumSeats + "/" + totalNumSeats + "/t";
-        for (String singlePrereq : prerequisites) {
+        for (String singlePrereq : preReqs) {
             course += singlePrereq + ",";
         }
         return course;
