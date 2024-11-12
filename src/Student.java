@@ -5,17 +5,15 @@ import java.io.IOException;
 import java.util.List;
 
 public class Student {
-    
+
     // Attributes
     private String ID;
-    private String name; 
+    private String name;
     private ArrayList<String> pastCourses;
     private ArrayList<String> futureCourses;
-    private int numCourses; 
+    private int numCourses;
     private String filePath;
-    private ArrayList<String> availableCourses;  // For courses from file1
-    
-
+    private ArrayList<String> availableCourses; // For courses from file1
 
     // Constructor
     Student() {
@@ -28,16 +26,15 @@ public class Student {
         this.availableCourses = new ArrayList<>();
     }
 
-    Student(String ID, String name, ArrayList<String> pastCourses, ArrayList<String> futureCourses, int numCourses, String filePath) {
+    Student(String ID, String name, ArrayList<String> pastCourses, ArrayList<String> futureCourses, int numCourses,
+            String filePath) {
         this.ID = ID;
         this.name = name;
-        this. pastCourses = pastCourses;
+        this.pastCourses = pastCourses;
         this.futureCourses = futureCourses;
         this.numCourses = numCourses;
         this.filePath = filePath;
     }
-
-    
 
     // Accessors
     public String getID() {
@@ -68,7 +65,7 @@ public class Student {
     public void setID(String newID) {
         this.ID = newID;
     }
-    
+
     public void setName(String newName) {
         this.name = newName;
     }
@@ -77,14 +74,13 @@ public class Student {
         this.numCourses = numCourses;
     }
 
-
     // Methods
     public boolean readFile(String fileName) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line = reader.readLine();
-            
+
             // Check if it's file1 (has column headers) or file2 (starts with student name)
-            if (line.contains("ID Name Status")) {  // File1 - Available courses
+            if (line.contains("ID Name Status")) { // File1 - Available courses
                 // Skip header
                 line = reader.readLine();
                 while (line != null) {
@@ -95,7 +91,7 @@ public class Student {
                     }
                     line = reader.readLine();
                 }
-            } else {  // File2 - Student info
+            } else { // File2 - Student info
                 String[] studentInfo = line.split("\t");
                 if (studentInfo.length >= 3) {
                     this.name = studentInfo[0].trim();
@@ -122,33 +118,43 @@ public class Student {
 
     public List<String> getFutureCoursesFormatted() {
         List<String> formattedCourses = new ArrayList<>();
-        for(String element : this.futureCourses) {
+        for (String element : this.futureCourses) {
             formattedCourses.add(element);
         }
         return formattedCourses;
     }
 
-    public boolean checkRegistrationForCourses(String course) {
+    public boolean checkRegistrationForCourses(Course course) {
+        // Checks if the class is full
+        if (course.classFull()) {
+            return false;
+        }
+
+        // Checks if prerequisites for the class were taken.
+        if (course.preReqsTaken(pastCourses)) {
+            return false;
+        }
+
         // Check max courses (should allow registration if numCourses > 0)
         if (this.numCourses <= 0) {
             return false;
         }
-        
+
         // Check past courses using formatted list
         for (String pastCourse : getPastCoursesFormatted()) {
-            if (pastCourse.equals(course)) {
+            if (pastCourse.equals(course.getID())) {
                 return false;
             }
         }
 
         // Check future courses
         for (String element : this.futureCourses) {
-            if (element.equals(course)) {
+            if (element.equals(course.getID())) {
                 return false;
             }
         }
 
-        this.futureCourses.add(course);
+        this.futureCourses.add(course.getName());
         this.numCourses--;
         return true;
     }
@@ -164,17 +170,13 @@ public class Student {
     public String toString() {
         StringBuilder student = new StringBuilder();
         student.append("The student's name and id number is: ").append(this.name)
-              .append(" ").append(this.ID).append(" and is taking ")
-              .append(this.numCourses).append(" amount of courses.\n");
-        
+                .append(" ").append(this.ID).append(" and is taking ")
+                .append(this.numCourses).append(" amount of courses.\n");
+
         student.append("Past courses: ").append(String.join(", ", getPastCoursesFormatted())).append("\n");
         student.append("Future courses: ").append(String.join(", ", getFutureCoursesFormatted()));
-        
+
         return student.toString();
     }
-
-
-    
-
 
 }
