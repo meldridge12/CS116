@@ -105,6 +105,18 @@ public class Student {
                     for (String course : courses) {
                         this.pastCourses.add(course.trim());
                     }
+                    
+                    // Read next line for registered courses
+                    line = reader.readLine();
+                    if (line != null && line.startsWith("Registered Courses:")) {
+                        String[] registeredCourses = line.substring("Registered Courses:".length()).trim().split(",");
+                        this.futureCourses.clear();
+                        for (String course : registeredCourses) {
+                            if (!course.trim().isEmpty()) {
+                                this.futureCourses.add(course.trim());
+                            }
+                        }
+                    }
                 }
             }
             return true;
@@ -128,37 +140,102 @@ public class Student {
         return formattedCourses;
     }
 
-    public boolean checkRegistrationForCourses(String course) {
-        // Check max courses (should allow registration if numCourses > 0)
+    public boolean checkRegistrationForCourses(String courseId) {
+        // Check if student has reached max courses (5)
         if (this.numCourses <= 0) {
+            System.out.println("Registration failed: Maximum number of courses (5) reached");
             return false;
         }
         
-        // Check past courses using formatted list
-        for (String pastCourse : getPastCoursesFormatted()) {
-            if (pastCourse.equals(course)) {
+        // Find the course in available courses
+        String selectedCourse = null;
+        for (String course : availableCourses) {
+            if (course.split(" ")[0].equals(courseId)) {
+                selectedCourse = course;
+                break;
+            }
+        }
+        
+        if (selectedCourse == null) {
+            System.out.println("Registration failed: Course " + courseId + " not found");
+            return false;
+        }
+        
+        // Check if course is already taken or registered
+        for (String pastCourse : pastCourses) {
+            if (pastCourse.trim().equals(courseId)) {
+                System.out.println("Registration failed: Course already taken in the past");
                 return false;
             }
         }
-
-        // Check future courses
-        for (String element : this.futureCourses) {
-            if (element.equals(course)) {
+        
+        for (String futureCourse : futureCourses) {
+            if (futureCourse.equals(courseId)) {
+                System.out.println("Registration failed: Course already registered");
                 return false;
             }
         }
-
-        this.futureCourses.add(course);
+        
+        // Check if course has available seats
+        String[] parts = selectedCourse.split(" ");
+        String[] seatsInfo = null;
+        for (String part : parts) {
+            if (part.contains("/")) {
+                seatsInfo = part.split("/");
+                break;
+            }
+        }
+        
+        if (seatsInfo != null) {
+            int currentSeats = Integer.parseInt(seatsInfo[0]);
+            int totalSeats = Integer.parseInt(seatsInfo[1]);
+            if (currentSeats >= totalSeats) {
+                System.out.println("Registration failed: Course is full");
+                return false;
+            }
+        }
+        
+        // Check prerequisites
+        String[] courseParts = selectedCourse.split(" ");
+        for (int i = 0; i < courseParts.length; i++) {
+            if (courseParts[i].contains(",")) {  // Found prerequisites
+                String[] prerequisites = courseParts[i].split(",");
+                for (String prereq : prerequisites) {
+                    boolean hasPrereq = false;
+                    for (String pastCourse : pastCourses) {
+                        if (pastCourse.trim().equals(prereq.trim())) {
+                            hasPrereq = true;
+                            break;
+                        }
+                    }
+                    if (!hasPrereq) {
+                        System.out.println("Registration failed: Missing prerequisite " + prereq);
+                        return false;
+                    }
+                }
+                break;
+            }
+        }
+        
+        // If all checks pass, register the course
+        this.futureCourses.add(courseId);
         this.numCourses--;
         return true;
     }
 
-    public boolean cancelCourse(String course) {
-        if (this.futureCourses.remove(course)) {
-            this.numCourses++;
-            return true;
+    public boolean cancelCourse(String courseId) {
+        // Check if the course is in future courses (registered for next semester)
+        if (!this.futureCourses.contains(courseId)) {
+            System.out.println("Cancellation failed: Course " + courseId + " is not registered for next semester");
+            return false;
         }
-        return false;
+        
+        // Remove the course and increase available course slots
+        this.futureCourses.remove(courseId);
+        this.numCourses++;
+        System.out.println("Course " + courseId + " has been successfully cancelled");
+        System.out.println("You now have " + this.numCourses + " available course slots");
+        return true;
     }
 
     public String toString() {
@@ -171,6 +248,104 @@ public class Student {
         student.append("Future courses: ").append(String.join(", ", getFutureCoursesFormatted()));
         
         return student.toString();
+    }
+
+    public void writeToFiles(String file1Name, String file2Name) {
+        writeToFile1(file1Name);
+        writeToFile2(file2Name);
+    }
+
+    private void writeToFile1(String fileName) {
+        try {
+            ArrayList<String> updatedCourses = new ArrayList<>();
+            // First line is header
+            updatedCourses.add("ID Name Status Prerequisite");
+            
+            // Update each course
+            for (String course : availableCourses) {
+                String[] parts = course.split(" ");
+                String courseId = parts[0];
+                
+                // If course is registered, increment current seats
+                if (futureCourses.contains(courseId)) {
+                    // Find the seats part and update it
+                    String updatedCourse = course;
+                    for (int i = 0; i < parts.length; i++) {
+                        if (parts[i].contains("/")) {
+                            String[] seats = parts[i].split("/");
+                            int current = Integer.parseInt(seats[0]);
+                            updatedCourse = course.replace(parts[i], (current + 1) + "/" + seats[1]);
+                            break;
+                        }
+                    }
+                    updatedCourses.add(updatedCourse);
+                } else {
+                    updatedCourses.add(course);
+                }
+            }
+            
+            // Write back to file
+            java.io.PrintWriter writer = new java.io.PrintWriter(fileName);
+            for (String course : updatedCourses) {
+                writer.println(course);
+            }
+            writer.close();
+            
+        } catch (IOException e) {
+            System.out.println("Error writing to file1: " + e.getMessage());
+        }
+    }
+
+    private void writeToFile2(String fileName) {
+        try {
+            java.io.PrintWriter writer = new java.io.PrintWriter(fileName);
+            
+            // Write student info and past courses
+            StringBuilder line = new StringBuilder();
+            line.append(this.name).append("\t")
+                .append(this.ID).append("\t");
+            
+            // Write past courses
+            line.append(String.join(",", pastCourses));
+            writer.println(line.toString());
+            
+            // Write registered courses on a new line if there are any
+            if (!futureCourses.isEmpty()) {
+                writer.println("Registered Courses: " + String.join(",", futureCourses));
+            }
+            
+            writer.close();
+            
+        } catch (IOException e) {
+            System.out.println("Error writing to file2: " + e.getMessage());
+        }
+    }
+
+    public boolean canGraduate() {
+        // Check if student has completed core requirements
+        String[] coreRequirements = {"CS115", "CS116", "CS330", "CS331"};
+        for (String req : coreRequirements) {
+            boolean found = false;
+            for (int i = 0; i < pastCourses.size(); i++) {
+                if (pastCourses.get(i).equals(req)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) return false;
+        }
+        return true;
+    }
+
+    public double calculateCourseLoad() {
+        // Calculate total credit hours for registered courses
+        int totalCredits = 0;
+        for (int i = 0; i < futureCourses.size(); i++) {
+            String courseId = futureCourses.get(i);
+            // Assume each course is 3 credits
+            totalCredits += 3;
+        }
+        return totalCredits;
     }
 
 
