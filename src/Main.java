@@ -36,14 +36,13 @@ public class Main {
         while (run) {
             System.out.println("\n---------------------------------------------");
             System.out.println("Please select an option:");
-            System.out.println("1. Input Files");
-            System.out.println("2. View All Courses");
-            System.out.println("3. View Past Courses Taken");
-            System.out.println("4. Search Courses");
-            System.out.println("5. Register for a Course");
-            System.out.println("6. Remove a Registered Course");
-            System.out.println("7. View Registered Courses");
-            System.out.println("8. Exit");
+            System.out.println("1. View All Courses");
+            System.out.println("2. View Past Courses Taken");
+            System.out.println("3. Search Courses");
+            System.out.println("4. Register for a Course");
+            System.out.println("5. Remove a Registered Course");
+            System.out.println("6. View Registered Courses");
+            System.out.println("7. Exit");
             System.out.println("---------------------------------------------\n");
             // Add input validation
             while (!reader.hasNextInt()) {
@@ -55,30 +54,6 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    student = new Student();
-                    boolean fileRead = false;
-
-                    while (!fileRead) {
-                        System.out.print("Please enter the name of file 1: ");
-                        String file1 = reader.next();
-                        if (student.readFile(file1)) {
-                            System.out.println("Successfully read file 1: " + file1);
-                            fileRead = true;
-                        } else {
-                            System.out.println("Error: File 1 cannot be found. Please try again.");
-                        }
-                    }
-
-                    try {
-                        System.out.print("Please enter the name of file 2: ");
-                        String file2 = reader.next();
-                        student.readFile(file2);
-                        System.out.println("Successfully read file 2: " + file2);
-                    } catch (Exception e) {
-                        System.out.println("Error: File 2 cannot be found");
-                    }
-                    break;
-                case 2:
                     if (student != null) {
                         System.out.println("Available courses:");
                         for (String course : student.getAvailableCourses()) {
@@ -93,7 +68,7 @@ public class Main {
                         System.out.println("Please input files first (Option 1)");
                     }
                     break;
-                case 3:
+                case 2:
                     if (student != null) {
                         System.out.println("The student's past courses are:");
                         for (String course : student.getPastCoursesFormatted()) {
@@ -103,7 +78,7 @@ public class Main {
                         System.out.println("Please input files first (Option 1)");
                     }
                     break;
-                case 4:
+                case 3:
                     if (student != null) {
                         System.out.print("Enter course ID to search: ");
                         String searchCourse = reader.nextLine();
@@ -127,7 +102,7 @@ public class Main {
                         System.out.println("Please input files first (Option 1)");
                     }
                     break;
-                case 5:
+                case 4:
                     if (student != null) {
                         System.out.print("Enter course ID to register: ");
                         String courseToRegister = reader.nextLine();
@@ -142,7 +117,7 @@ public class Main {
                         System.out.println("Please input files first (Option 1)");
                     }
                     break;
-                case 6:
+                case 5:
                     if (student != null) {
                         System.out.print("Enter course ID to remove: ");
                         String courseToRemove = reader.nextLine();
@@ -155,7 +130,7 @@ public class Main {
                         System.out.println("Please input files first (Option 1)");
                     }
                     break;
-                case 7:
+                case 6:
                     if (student != null) {
                         System.out.println("Registered courses:");
                         for (String course : student.getFutureCoursesFormatted()) {
@@ -165,7 +140,7 @@ public class Main {
                         System.out.println("Please input files first (Option 1)");
                     }
                     break;
-                case 8:
+                case 7:
                     run = false;
                     break;
                 default:

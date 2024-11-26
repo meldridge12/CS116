@@ -12,28 +12,16 @@ public class Student {
     private ArrayList<String> pastCourses;
     private ArrayList<String> futureCourses;
     private int numCourses;
-    private String filePath;
     private ArrayList<String> availableCourses; // For courses from file1
 
     // Constructor
-    Student() {
-        this.ID = "No Student ID";
-        this.name = "No Student name";
-        this.pastCourses = new ArrayList<>();
-        this.futureCourses = new ArrayList<>();
-        this.numCourses = 5;
-        this.filePath = "";
-        this.availableCourses = new ArrayList<>();
-    }
 
-    Student(String ID, String name, ArrayList<String> pastCourses, ArrayList<String> futureCourses, int numCourses,
-            String filePath) {
+    Student(String ID, String name, ArrayList<String> pastCourses, ArrayList<String> futureCourses, int numCourses) {
         this.ID = ID;
         this.name = name;
         this.pastCourses = pastCourses;
         this.futureCourses = futureCourses;
         this.numCourses = numCourses;
-        this.filePath = filePath;
     }
 
     // Accessors
