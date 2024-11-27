@@ -3,34 +3,28 @@ import java.util.ArrayList;
 public class Course {
 
     // attributes
-    private String iD;
+    private String id;
     private String name;
     private int currentNumSeats;
     private int totalNumSeats;
     private ArrayList<String> preReqs;
 
+    private static ArrayList<Course> availableCourses = new ArrayList<>();
+
     // constants
 
     // constructors
-    public Course() {
-        iD = "N/A";
-        name = "N/A";
-        currentNumSeats = 0;
-        totalNumSeats = 0;
-        preReqs = new ArrayList<String>();
-    }
-
-    public Course(String tempID, String tempName, int tempCurrent, int tempTotal, ArrayList<String> tempReqs) {
-        iD = tempID;
-        name = tempName;
-        currentNumSeats = tempCurrent;
-        totalNumSeats = tempTotal;
-        preReqs = tempReqs;
+    public Course(String id, String name, int currentNumSeats, int totalNumSeats, ArrayList<String> preReqs) {
+        this.id = id;
+        this.name = name;
+        this.currentNumSeats = currentNumSeats;
+        this.totalNumSeats = totalNumSeats;
+        this.preReqs = preReqs;
     }
 
     // accessors
     public String getID() {
-        return iD;
+        return id;
     }
 
     public String getName() {
@@ -45,13 +39,13 @@ public class Course {
         return totalNumSeats;
     }
 
-    public ArrayList<String> getPrereqs() {
+    public ArrayList<String> getpreReqs() {
         return preReqs;
     }
 
     // mutators
     public void setID(String newID) {
-        iD = newID;
+        id = newID;
     }
 
     public void setName(String newName) {
@@ -66,27 +60,51 @@ public class Course {
         totalNumSeats = newTotal;
     }
 
-    public void setNewPrereqs(ArrayList<String> newPreeqs) {
+    public void setNewpreReqs(ArrayList<String> newPreeqs) {
         preReqs = newPreeqs;
     }
 
     // additional methods
+    public static void addCourse(String id, String name, int currentNumSeats, int totalNumSeats,
+            ArrayList<String> preReqs) {
+        Course newCourse = new Course(id, name, currentNumSeats, totalNumSeats, preReqs);
+        availableCourses.add(newCourse);
+    }
+
+    public static void removeCourse(String course) {
+        int indexOfCourse = -1;
+
+        for (int i = 0; i < availableCourses.size(); i++) {
+            if (availableCourses.get(i).getID().equals(course)) {
+                indexOfCourse = i;
+                break;
+            }
+        }
+
+        if (indexOfCourse == -1) {
+            System.out.println("This course does not exist.");
+        } else {
+            availableCourses.remove(indexOfCourse);
+        }
+
+    }
+
     public boolean classFull() {
         return currentNumSeats / totalNumSeats == 1;
     }
 
-    public boolean preReqsTaken(ArrayList<String> oldCourses) {
-        boolean noPrereqs = false;
+    public boolean preReqsTaken(ArrayList<Course> oldCourses) {
+        boolean nopreReqs = false;
 
-        for (String oldCourse : oldCourses) {
-            if (noPrereqs) {
+        for (Course oldCourse : oldCourses) {
+            if (nopreReqs) {
                 return false;
             }
 
-            noPrereqs = true;
+            nopreReqs = true;
             for (int i = 0; i < preReqs.size(); i++) {
-                if (oldCourse != preReqs.get(i))
-                    noPrereqs = false;
+                if (oldCourse.getID() != preReqs.get(i))
+                    nopreReqs = false;
             }
         }
         return true;
@@ -94,7 +112,7 @@ public class Course {
 
     // 2String
     public String toString() {
-        String course = iD + "/t" + name + "/t" + currentNumSeats + "/" + totalNumSeats + "/t";
+        String course = id + "/t" + name + "/t" + currentNumSeats + "/" + totalNumSeats + "/t";
         for (String singlePrereq : preReqs) {
             course += singlePrereq + ",";
         }
