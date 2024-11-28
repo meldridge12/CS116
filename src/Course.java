@@ -65,28 +65,112 @@ public class Course {
     }
 
     // additional methods
+
+    // This uses merge sort to allign the class ID's in numerical order.
+    public static void numOrder(Course[] array) {
+        int size = availableCourses.size();
+
+        if (size <= 1) {
+            return;
+        }
+
+        int middle = size / 2;
+        Course[] left = new Course[middle];
+        Course[] right = new Course[size - middle];
+
+        int i = 0;
+        int j = 0;
+
+        for (; i < size; i++) {
+            if (i < middle) {
+                left[i] = availableCourses.get(i);
+            } else {
+                right[i] = availableCourses.get(i);
+                j++;
+            }
+
+        }
+
+        numOrder(left);
+        numOrder(right);
+        merge(left, right, array);
+    }
+
+    public static void merge(Course[] leftArray, Course[] rightArray, Course[] array) {
+        int left = array.length / 2;
+        int right = array.length - left;
+
+        int index = 0, l = 0, r = 0;
+
+        while (l < left && r < right) {
+            String leftString = leftArray[l].getID().substring(2);
+            int leftID = Integer.parseInt(leftString);
+
+            String rightString = rightArray[r].getID().substring(2);
+            int rightID = Integer.parseInt(rightString);
+
+            if (leftID < rightID) {
+                array[index] = leftArray[l];
+                l++;
+            } else {
+                array[index] = rightArray[r];
+                r++;
+            }
+            index++;
+        }
+
+        while (l < left) {
+            array[index] = leftArray[l];
+            l++;
+            index++;
+        }
+
+        while (r < right) {
+            array[index] = rightArray[r];
+            r++;
+            index++;
+        }
+    }
+
+    // This uses binary search to match a course's ID and its index.
+    public static int indexSearch(String course) {
+
+    }
+
+    // This uses binary search to add the class ID at the right spot so that the
+    // ID's are in numerical order.
     public static void addCourse(String id, String name, int currentNumSeats, int totalNumSeats,
             ArrayList<String> preReqs) {
         Course newCourse = new Course(id, name, currentNumSeats, totalNumSeats, preReqs);
+
         availableCourses.add(newCourse);
     }
 
+    // This uses binary search
     public static void removeCourse(String course) {
-        int indexOfCourse = -1;
+        if (doesCourseExist(course)) {
+            for (int i = 0; i < availableCourses.size(); i++) {
+                if (availableCourses.get(i).getID().equals(course)) {
+                    availableCourses.remove(i);
+                    break;
+                }
+            }
+        } else {
+            System.out.println("This course does not exist.");
+        }
+    }
 
-        for (int i = 0; i < availableCourses.size(); i++) {
-            if (availableCourses.get(i).getID().equals(course)) {
-                indexOfCourse = i;
-                break;
+    public static boolean doesCourseExist(String course) {
+        for (Course courseEvaluated : availableCourses) {
+            if (courseEvaluated.getID().equals(course)) {
+                return true;
             }
         }
+        return false;
+    }
 
-        if (indexOfCourse == -1) {
-            System.out.println("This course does not exist.");
-        } else {
-            availableCourses.remove(indexOfCourse);
-        }
-
+    public static ArrayList<Course> availCourses() {
+        return availableCourses;
     }
 
     public boolean classFull() {
