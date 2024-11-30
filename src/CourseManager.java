@@ -176,6 +176,31 @@ public class CourseManager {
         return true;
     }
 
+    public String samePreReqs(ArrayList<String> reqCourses) {
+        String missingPreReqs = "";
+
+        ArrayList<String> pastCourses = new ArrayList<>();
+        for (Course pastCourse : coursesArrayList) {
+            pastCourses.add(pastCourse.getID());
+        }
+
+        for (String reqCourse : reqCourses) {
+            boolean preReqPresent = false;
+            for (String pastCourse : pastCourses) {
+                if (reqCourse == pastCourse) {
+                    preReqPresent = true;
+                    break;
+                }
+            }
+
+            if (!preReqPresent) {
+                missingPreReqs += reqCourse + ",";
+            }
+        }
+
+        return missingPreReqs;
+    }
+
     public String toString() {
         String courses = "";
         for (Course course : coursesArrayList) {

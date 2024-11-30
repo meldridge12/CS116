@@ -73,15 +73,21 @@ public class Student {
             requirementsFulfilled = false;
         }
 
-        // FIX THIS PLS ITS A STRING ARRAY NOT A COURSE ARRAY
-        if (courseArrayList.sameCoursesList(pastCourses)) {
-            registrationReqs += "This student doesn't have the required prerequisites for the course.\n";
+        int indexCourse = courseArrayList.indexSearch(course);
+        Course theCourse = courseArrayList.getCourseArrayList().get(indexCourse);
+        ArrayList<String> preReqsList = theCourse.getpreReqs();
+        String potentialMissingReqs = courseArrayList.samePreReqs(preReqsList);
+
+        if (potentialMissingReqs != "") {
+            registrationReqs += "This student doesn't have these required prerequisites for the course: "
+                    + potentialMissingReqs + "\n";
             requirementsFulfilled = false;
         }
 
         if (requirementsFulfilled) {
             int courseIndex = courseArrayList.indexSearch(course);
             Course analyzedCourse = courseArrayList.getCourseArrayList().get(courseIndex);
+
             String id = analyzedCourse.getID();
             String name = analyzedCourse.getName();
             int currentNumSeats = analyzedCourse.getCurrentSeats();
@@ -102,10 +108,9 @@ public class Student {
         }
 
         /*
-         * No need to check to see if it exists in courseArrayList because it can't be
-         * added
-         * to the student Course list in the first place if it doesn't exist in
-         * courseArrayList.
+         * No need to check to see if it exists in courseArrayList because
+         * it can't be added to the student Course list in the
+         * first place if it doesn't exist in courseArrayList.
          */
 
         futureCourses.removeCourse(course);
