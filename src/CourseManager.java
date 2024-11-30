@@ -1,25 +1,29 @@
 import java.util.ArrayList;
 
 public class CourseManager {
-    private ArrayList<Course> courses;
+    private ArrayList<Course> coursesArrayList;
 
     // Constructor
     public CourseManager() {
-        this.courses = new ArrayList<>();
+        coursesArrayList = new ArrayList<>();
+    }
+
+    public ArrayList<Course> getCourseArrayList() {
+        return coursesArrayList;
     }
 
     public Course[] coursesArray() {
-        Course[] courseArray = new Course[courses.size()];
+        Course[] courseArray = new Course[coursesArrayList.size()];
 
-        for (int i = 0; i < courses.size(); i++) {
-            courseArray[i] = courses.get(i);
+        for (int i = 0; i < coursesArrayList.size(); i++) {
+            courseArray[i] = coursesArrayList.get(i);
         }
 
         return courseArray;
     }
 
     // This uses merge sort to allign the class ID's in numerical order.
-    public void numOrder(ArrayList<Course> theArrayList, Course[] classIDarray) {
+    public void numOrder(Course[] classIDarray) {
         int length = classIDarray.length;
 
         if (length <= 1) {
@@ -42,13 +46,13 @@ public class CourseManager {
 
         }
 
-        numOrder(theArrayList, left);
-        numOrder(theArrayList, right);
+        numOrder(left);
+        numOrder(right);
         merge(left, right, classIDarray);
 
-        if (length == theArrayList.size()) {
+        if (length == coursesArrayList.size()) {
             for (int i = 0; i < length; i++) {
-                theArrayList.set(i, classIDarray[i]);
+                coursesArrayList.set(i, classIDarray[i]);
             }
         }
     }
@@ -91,24 +95,24 @@ public class CourseManager {
     }
 
     // This checks to see if a class is full, or even overbooked
-    public boolean checkAvailability(String course, ArrayList<Course> theArrayList) {
-        int index = indexSearch(course, theArrayList);
-        Course courseAvailable = theArrayList.get(index);
+    public boolean checkAvailability(String course) {
+        int index = indexSearch(course);
+        Course courseAvailable = coursesArrayList.get(index);
 
         return courseAvailable.getCurrentSeats() < courseAvailable.getTotalSeats();
     }
 
     // This uses binary search to see if a course ID exists or not.
-    public int indexSearch(String course, ArrayList<Course> theArrayList) {
+    public int indexSearch(String course) {
         int left = 0;
-        int right = theArrayList.size() - 1;
+        int right = coursesArrayList.size() - 1;
 
         int courseEvaluatedID = Integer.parseInt(course.substring(2));
 
         while (right >= left) {
             int center = (right + left) / 2;
 
-            String centerString = theArrayList.get(center).getID().substring(2);
+            String centerString = coursesArrayList.get(center).getID().substring(2);
             int centerID = Integer.parseInt(centerString);
 
             if (courseEvaluatedID == centerID) {
@@ -125,10 +129,10 @@ public class CourseManager {
     }
 
     // This adds a course
-    public void addCourse(ArrayList<Course> theArrayList, String id, String name, int currentNumSeats,
+    public void addCourse(String id, String name, int currentNumSeats,
             int totalNumSeats,
-            ArrayList<String> preReqs) {
-        if (indexSearch(id, theArrayList) != -1) {
+            CourseManager preReqs) {
+        if (indexSearch(id) != -1) {
             System.out.println("This course ID is taken.");
             return;
         }
@@ -140,40 +144,40 @@ public class CourseManager {
         String newID = id.substring(2);
         int newIDnum = Integer.parseInt(newID);
 
-        for (int i = 0; i < theArrayList.size(); i++) {
-            String compared = theArrayList.get(i).getID().substring(2);
+        for (int i = 0; i < coursesArrayList.size(); i++) {
+            String compared = coursesArrayList.get(i).getID().substring(2);
             int comparedID = Integer.parseInt(compared);
 
             if (comparedID > newIDnum) {
-                theArrayList.add(i, newCourse);
+                coursesArrayList.add(i, newCourse);
                 return;
             }
         }
-        theArrayList.add(newCourse);
+        coursesArrayList.add(newCourse);
     }
 
     // This uses binary search to remove the course.
-    public void removeCourse(String course, ArrayList<Course> coursesSearched) {
-        int index = indexSearch(course, coursesSearched);
+    public void removeCourse(String course) {
+        int index = indexSearch(course);
 
         if (index > -1) {
-            coursesSearched.remove(index);
+            coursesArrayList.remove(index);
         } else {
             System.out.println("This course does not exist.");
         }
     }
 
-    public boolean sameCoursesList(ArrayList<Course> first, ArrayList<Course> second) {
+    public boolean sameCoursesList(ArrayList<Course> comparedArray) {
         boolean sameCourses = true;
 
-        for (Course firstCourses : first) {
+        for (Course firstCourses : coursesArrayList) {
             if (!sameCourses) {
                 return false;
             }
 
             sameCourses = true;
-            for (Course secondCourses : second) {
-                if (firstCourses.getID().equals(secondCourses.getID())) {
+            for (Course comparedCourses : comparedArray) {
+                if (firstCourses.getID().equals(comparedCourses.getID())) {
                     sameCourses = true;
                     break;
                 }
