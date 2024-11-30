@@ -130,12 +130,7 @@ public class CourseManager {
 
     // This adds a course
     public void addCourse(String id, String name, int currentNumSeats,
-            int totalNumSeats,
-            CourseManager preReqs) {
-        if (indexSearch(id) != -1) {
-            System.out.println("This course ID is taken.");
-            return;
-        }
+            int totalNumSeats, ArrayList<String> preReqs) {
 
         Course newCourse = new Course(id, name, currentNumSeats, totalNumSeats, preReqs);
 
@@ -158,16 +153,10 @@ public class CourseManager {
 
     // This uses binary search to remove the course.
     public void removeCourse(String course) {
-        int index = indexSearch(course);
-
-        if (index > -1) {
-            coursesArrayList.remove(index);
-        } else {
-            System.out.println("This course does not exist.");
-        }
+        coursesArrayList.remove(indexSearch(course));
     }
 
-    public boolean sameCoursesList(ArrayList<Course> comparedArray) {
+    public boolean sameCoursesList(CourseManager comparedArray) {
         boolean sameCourses = true;
 
         for (Course firstCourses : coursesArrayList) {
@@ -176,7 +165,7 @@ public class CourseManager {
             }
 
             sameCourses = true;
-            for (Course comparedCourses : comparedArray) {
+            for (Course comparedCourses : comparedArray.getCourseArrayList()) {
                 if (firstCourses.getID().equals(comparedCourses.getID())) {
                     sameCourses = true;
                     break;
@@ -187,4 +176,12 @@ public class CourseManager {
         return true;
     }
 
+    public String toString() {
+        String courses = "";
+        for (Course course : coursesArrayList) {
+            courses += course + "\n";
+        }
+
+        return courses;
+    }
 }

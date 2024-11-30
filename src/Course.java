@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Course {
 
     // attributes
@@ -5,12 +7,12 @@ public class Course {
     private String name;
     private int currentNumSeats;
     private int totalNumSeats;
-    private CourseManager preReqs;
+    private ArrayList<String> preReqs;
 
     // constants
 
     // constructors
-    public Course(String id, String name, int currentNumSeats, int totalNumSeats, CourseManager preReqs) {
+    public Course(String id, String name, int currentNumSeats, int totalNumSeats, ArrayList<String> preReqs) {
         this.id = id;
         this.name = name;
         this.currentNumSeats = currentNumSeats;
@@ -35,7 +37,7 @@ public class Course {
         return totalNumSeats;
     }
 
-    public CourseManager getpreReqs() {
+    public ArrayList<String> getpreReqs() {
         return preReqs;
     }
 
@@ -56,8 +58,8 @@ public class Course {
         totalNumSeats = newTotal;
     }
 
-    public void setCourseManager(CourseManager newPreeqs) {
-        preReqs = newPreeqs;
+    public void setPreReqs(ArrayList<String> newPreReqs) {
+        preReqs = newPreReqs;
     }
 
     // additional methods
@@ -65,8 +67,8 @@ public class Course {
     // 2String
     public String toString() {
         String course = id + "\t" + name + "\t" + currentNumSeats + "/" + totalNumSeats + "\t";
-        for (Course preReqs : preReqs.getCourseArrayList()) {
-            course += preReqs + ",";
+        for (String preReq : preReqs) {
+            course += preReq + ",";
         }
         return course;
     }

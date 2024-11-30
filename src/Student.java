@@ -1,27 +1,20 @@
 import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
 
 public class Student {
 
     // Attributes
     private String ID;
     private String name;
-    private ArrayList<String> pastCourses;
-    private ArrayList<String> futureCourses;
-    private int numCourses;
-    private ArrayList<String> availableCourses; // For courses from file1
+    private CourseManager pastCourses;
+    private CourseManager futureCourses;
 
     // Constructor
 
-    Student(String ID, String name, ArrayList<String> pastCourses, ArrayList<String> futureCourses, int numCourses) {
+    Student(String ID, String name, CourseManager pastCourses, CourseManager futureCourses) {
         this.ID = ID;
         this.name = name;
         this.pastCourses = pastCourses;
         this.futureCourses = futureCourses;
-        this.numCourses = numCourses;
     }
 
     // Accessors
@@ -33,20 +26,12 @@ public class Student {
         return this.name;
     }
 
-    public ArrayList<String> getPastCourses() {
+    public CourseManager getPastCourses() {
         return this.pastCourses;
     }
 
-    public ArrayList<String> getFutureCourses() {
+    public CourseManager getFutureCourses() {
         return this.futureCourses;
-    }
-
-    public int getNumCourses() {
-        return this.numCourses;
-    }
-
-    public ArrayList<String> getAvailableCourses() {
-        return this.availableCourses;
     }
 
     // Mutators
@@ -58,113 +43,92 @@ public class Student {
         this.name = newName;
     }
 
-    public void setNumCourses(int numCourses) {
-        this.numCourses = numCourses;
+    // Additional Methods
+
+    /*
+     * This checks if the student is able to register.
+     * If they are, then information is edited.
+     * Also this is a System.out.print without the ln.
+     */
+    public String checkRegistration(CourseManager courseArrayList, String course) {
+        String rejection = "Course registration has been rejected.\n";
+
+        if (courseArrayList.indexSearch(course) == -1) {
+            return rejection + "This course doesn't exist.\n";
+        }
+
+        if (courseArrayList.checkAvailability(course)) {
+            return rejection + "This class is full.\n";
+        }
+
+        if (pastCourses.indexSearch(course) != -1) {
+            return rejection + "This student already has taken this class.\n";
+        }
+
+        boolean requirementsFulfilled = true;
+        String registrationReqs = new String();
+
+        if (futureCourses.getCourseArrayList().size() >= 5) {
+            registrationReqs += "This student is already taking five or more courses.\n";
+            requirementsFulfilled = false;
+        }
+
+        // FIX THIS PLS ITS A STRING ARRAY NOT A COURSE ARRAY
+        if (courseArrayList.sameCoursesList(pastCourses)) {
+            registrationReqs += "This student doesn't have the required prerequisites for the course.\n";
+            requirementsFulfilled = false;
+        }
+
+        if (requirementsFulfilled) {
+            int courseIndex = courseArrayList.indexSearch(course);
+            Course analyzedCourse = courseArrayList.getCourseArrayList().get(courseIndex);
+            String id = analyzedCourse.getID();
+            String name = analyzedCourse.getName();
+            int currentNumSeats = analyzedCourse.getCurrentSeats();
+            int totalNumSeats = analyzedCourse.getTotalSeats();
+            ArrayList<String> preReqs = analyzedCourse.getpreReqs();
+
+            futureCourses.addCourse(id, name, currentNumSeats, totalNumSeats, preReqs);
+
+            return "This student has been registered for this course.\n";
+        }
+
+        return rejection + registrationReqs;
     }
 
-    // Methods
-    public boolean readFile(String fileName) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line = reader.readLine();
-
-            // Check if it's file1 (has column headers) or file2 (starts with student name)
-            if (line.contains("ID Name Status")) { // File1 - Available courses
-                // Skip header
-                line = reader.readLine();
-                while (line != null) {
-                    String[] parts = line.split("\t");
-                    if (parts.length > 0) {
-                        // Store the full course information
-                        this.availableCourses.add(line.trim());
-                    }
-                    line = reader.readLine();
-                }
-            } else { // File2 - Student info
-                String[] studentInfo = line.split("\t");
-                if (studentInfo.length >= 3) {
-                    this.name = studentInfo[0].trim();
-                    this.ID = studentInfo[1].trim();
-                    String[] courses = studentInfo[2].split(",");
-                    this.pastCourses.clear();
-                    for (String course : courses) {
-                        this.pastCourses.add(course.trim());
-                    }
-                }
-            }
-            return true;
-        } catch (IOException e) {
-            System.out.println("Error reading file: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public List<String> getPastCoursesFormatted() {
-        List<String> formattedCourses = new ArrayList<>();
-        formattedCourses.addAll(this.pastCourses);
-        return formattedCourses;
-    }
-
-    public List<String> getFutureCoursesFormatted() {
-        List<String> formattedCourses = new ArrayList<>();
-        for (String element : this.futureCourses) {
-            formattedCourses.add(element);
-        }
-        return formattedCourses;
-    }
-
-    public boolean checkRegistrationForCourses(Course course) {
-        // Checks if the class is full
-        if (course.classFull()) {
-            return false;
+    public void cancelCourse(CourseManager courseArrayList, String course) {
+        if (futureCourses.indexSearch(course) == -1) {
+            System.out.println("This student isn't scheduled to take this course next semester.");
         }
 
-        // Checks if prerequisites for the class were taken.
-        if (course.preReqsTaken(pastCourses)) {
-            return false;
-        }
+        /*
+         * No need to check to see if it exists in courseArrayList because it can't be
+         * added
+         * to the student Course list in the first place if it doesn't exist in
+         * courseArrayList.
+         */
 
-        // Check max courses (should allow registration if numCourses > 0)
-        if (this.numCourses <= 0) {
-            return false;
-        }
+        futureCourses.removeCourse(course);
+        System.out.println("Course has been removed.");
 
-        // Check past courses using formatted list
-        for (String pastCourse : getPastCoursesFormatted()) {
-            if (pastCourse.equals(course.getID())) {
-                return false;
-            }
-        }
-
-        // Check future courses
-        for (String element : this.futureCourses) {
-            if (element.equals(course.getID())) {
-                return false;
-            }
-        }
-
-        this.futureCourses.add(course.getName());
-        this.numCourses--;
-        return true;
-    }
-
-    public boolean cancelCourse(String course) {
-        if (this.futureCourses.remove(course)) {
-            this.numCourses++;
-            return true;
-        }
-        return false;
+        int index = courseArrayList.indexSearch(course);
+        Course courseAnalyzed = courseArrayList.getCourseArrayList().get(index);
+        courseAnalyzed.setCurrentSeats(courseAnalyzed.getCurrentSeats() - 1);
     }
 
     public String toString() {
-        StringBuilder student = new StringBuilder();
-        student.append("The student's name and id number is: ").append(this.name)
-                .append(" ").append(this.ID).append(" and is taking ")
-                .append(this.numCourses).append(" amount of courses.\n");
+        String studentInfo = name + "\t" + ID + "\t";
 
-        student.append("Past courses: ").append(String.join(", ", getPastCoursesFormatted())).append("\n");
-        student.append("Future courses: ").append(String.join(", ", getFutureCoursesFormatted()));
+        for (Course pastCourse : pastCourses.getCourseArrayList()) {
+            studentInfo += pastCourse + ",";
+        }
+        studentInfo += "\t";
 
-        return student.toString();
+        for (Course futureCourse : futureCourses.getCourseArrayList()) {
+            studentInfo += futureCourse + ",";
+        }
+
+        return studentInfo;
     }
 
 }
