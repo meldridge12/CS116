@@ -3,7 +3,8 @@ import java.util.ArrayList;
 public class CourseManager {
     private ArrayList<Course> coursesArrayList;
 
-    // Constructor
+    // Constructor, no need for one with explicit parameters
+    // because of addCourse method.
     public CourseManager() {
         coursesArrayList = new ArrayList<>();
     }
