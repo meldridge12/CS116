@@ -131,22 +131,24 @@ public class CourseManager {
 
     // This adds a course
     public void addCourse(String id, String name, int currentNumSeats,
-            int totalNumSeats, ArrayList<String> preReqs) {
+            int totalNumSeats, ArrayList<String> preReqs, boolean insertion) {
 
         Course newCourse = new Course(id, name, currentNumSeats, totalNumSeats, preReqs);
 
-        // This uses insertion sort to add the course.
-        // Insertion sort more effective than the mergeSort algorithm I created.
-        String newID = id.substring(2);
-        int newIDnum = Integer.parseInt(newID);
+        if (insertion) {
+            // This uses insertion sort to add the course.
+            // Insertion sort more effective than the mergeSort algorithm I created.
+            String newID = id.substring(2);
+            int newIDnum = Integer.parseInt(newID);
 
-        for (int i = 0; i < coursesArrayList.size(); i++) {
-            String compared = coursesArrayList.get(i).getID().substring(2);
-            int comparedID = Integer.parseInt(compared);
+            for (int i = 0; i < coursesArrayList.size(); i++) {
+                String compared = coursesArrayList.get(i).getID().substring(2);
+                int comparedID = Integer.parseInt(compared);
 
-            if (comparedID > newIDnum) {
-                coursesArrayList.add(i, newCourse);
-                return;
+                if (comparedID > newIDnum) {
+                    coursesArrayList.add(i, newCourse);
+                    return;
+                }
             }
         }
         coursesArrayList.add(newCourse);

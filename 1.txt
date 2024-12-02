@@ -1,5 +1,5 @@
 ID  Name    Status  Prerequisite
-CS451   Introduction to Parallel and Distributed Computing  35/80   CS351,CS450
+CS451  Introduction to Parallel and Distributed Computing  35/80   CS351,CS450
 CS100   Introduction to the Profession  45/50   
 CS105   Introduction to Computer Programming 3/20   
 CS115   Object-Oriented Programming I   99/100  

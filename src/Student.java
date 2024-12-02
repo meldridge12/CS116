@@ -94,7 +94,9 @@ public class Student {
             int totalNumSeats = analyzedCourse.getTotalSeats();
             ArrayList<String> preReqs = analyzedCourse.getpreReqs();
 
-            futureCourses.addCourse(id, name, currentNumSeats, totalNumSeats, preReqs);
+            futureCourses.addCourse(id, name, currentNumSeats, totalNumSeats, preReqs, true);
+
+            analyzedCourse.setCurrentSeats(analyzedCourse.getCurrentSeats() + 1);
 
             return "This student has been registered for this course.\n";
         }
@@ -122,15 +124,15 @@ public class Student {
     }
 
     public String toString() {
-        String studentInfo = name + "\t" + ID + "\t";
+        String studentInfo = name + "\n" + ID + "\n";
 
         for (Course pastCourse : pastCourses.getCourseArrayList()) {
-            studentInfo += pastCourse + ",";
+            studentInfo += pastCourse.getID() + ",";
         }
-        studentInfo += "\t";
+        studentInfo += "\n";
 
         for (Course futureCourse : futureCourses.getCourseArrayList()) {
-            studentInfo += futureCourse + ",";
+            studentInfo += futureCourse.getID() + ",";
         }
 
         return studentInfo;
