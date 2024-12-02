@@ -57,7 +57,7 @@ public class Student {
             return rejection + "This course doesn't exist.\n";
         }
 
-        if (courseArrayList.checkAvailability(course)) {
+        if (!courseArrayList.checkAvailability(course)) {
             return rejection + "This class is full.\n";
         }
 
@@ -124,18 +124,29 @@ public class Student {
     }
 
     public String toString() {
-        String studentInfo = name + "\n" + ID + "\n";
+        StringBuilder studentInfo = new StringBuilder();
+        studentInfo.append(name).append("\n").append(ID).append("\n");
 
-        for (Course pastCourse : pastCourses.getCourseArrayList()) {
-            studentInfo += pastCourse.getID() + ",";
+        // Append past courses
+        ArrayList<Course> pastList = pastCourses.getCourseArrayList();
+        for (int i = 0; i < pastList.size(); i++) {
+            studentInfo.append(pastList.get(i).getID());
+            if (i < pastList.size() - 1) {
+                studentInfo.append(",");
+            }
         }
-        studentInfo += "\n";
+        studentInfo.append("\n");
 
-        for (Course futureCourse : futureCourses.getCourseArrayList()) {
-            studentInfo += futureCourse.getID() + ",";
+        // Append future courses
+        ArrayList<Course> futureList = futureCourses.getCourseArrayList();
+        for (int i = 0; i < futureList.size(); i++) {
+            studentInfo.append(futureList.get(i).getID());
+            if (i < futureList.size() - 1) {
+                studentInfo.append(",");
+            }
         }
 
-        return studentInfo;
+        return studentInfo.toString();
     }
 
 }

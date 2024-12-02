@@ -89,7 +89,7 @@ public class Main {
                 // fC stands for: future Course
                 Course fC = courseList.getCourseArrayList().get(index);
 
-                pastCoursesList.addCourse(fC.getID(), fC.getName(), fC.getCurrentSeats(),
+                futureCoursesList.addCourse(fC.getID(), fC.getName(), fC.getCurrentSeats(),
                         fC.getTotalSeats(), fC.getpreReqs(), false);
             }
         }
@@ -119,7 +119,7 @@ public class Main {
         Scanner scan = new Scanner(register);
         System.out.print(register);
 
-        if (scan.nextLine() != "Course registration has been rejected.") {
+        if (!scan.nextLine().equals("Course registration has been rejected.")) {
 
             String newStuFile = stuInfo.toString();
             try (FileWriter courseWriter = new FileWriter(studentFile)) {

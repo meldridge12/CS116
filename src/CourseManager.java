@@ -156,7 +156,12 @@ public class CourseManager {
 
     // This uses binary search to remove the course.
     public void removeCourse(String course) {
-        coursesArrayList.remove(indexSearch(course));
+        int index = indexSearch(course);
+        if (index != -1) {
+            coursesArrayList.remove(index);
+        } else {
+            System.out.println("Course not found.");
+        }
     }
 
     public boolean sameCoursesList(CourseManager comparedArray) {
@@ -190,7 +195,7 @@ public class CourseManager {
         for (String reqCourse : reqCourses) {
             boolean preReqPresent = false;
             for (String pastCourse : pastCourses) {
-                if (reqCourse == pastCourse) {
+                if (reqCourse.equals(pastCourse)) {
                     preReqPresent = true;
                     break;
                 }
